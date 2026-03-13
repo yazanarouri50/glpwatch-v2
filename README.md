@@ -1,4 +1,6 @@
-# GLP-1 Watch v2 
+# GLP-1 Watch 
+
+Author: Yazan Arouri
 
 > Personal research dashboard tracking the global GLP-1 / obesity drug market boom.  
 > **Python backend (FastAPI + NumPy) · Vanilla JS frontend · Live ClinicalTrials.gov API**
@@ -8,18 +10,18 @@
 ## Architecture
 
 ```
-frontend/          ← pure HTML/CSS/JS — zero business logic
+frontend/          :pure HTML/CSS/JS — zero business logic
   index.html
   styles/main.css
   js/
-    app.js         ← tab rendering, calls backend API
-    api.js         ← thin fetch() wrapper for all endpoints
-    charts.js      ← Chart.js rendering, accepts API data shapes
+    app.js         :tab rendering, calls backend API
+    api.js         : thin fetch() wrapper for all endpoints
+    charts.js      : Chart.js rendering, accepts API data shapes
 
-backend/           ← all data + computation
-  main.py          ← FastAPI app, all routes
-  data.py          ← ClinicalTrials.gov async fetch, sourced static data
-  forecast.py      ← NumPy logistic model, Monte Carlo, eNPV
+backend/           : all data + computation
+  main.py          : FastAPI app, all routes
+  data.py          : ClinicalTrials.gov async fetch, sourced static data
+  forecast.py      : NumPy logistic model, Monte Carlo, eNPV
   requirements.txt
 ```
 
@@ -69,13 +71,12 @@ Forecast params: `horizon`, `scenario`, `pen`, `net_price`, `gtn`, `iterations`
 
 ## Data Sources
 
-| Source | Type | Used for |
-|--------|------|----------|
-| [ClinicalTrials.gov v2 API](https://clinicaltrials.gov/data-api/api) | 🟢 Live | Active GLP-1 obesity trials |
-| [CMS Part D 2023](https://data.cms.gov) | 🟡 Sourced | WAC vs net price by drug |
-| [CDC NHANES 2021-22](https://www.cdc.gov/obesity/data/adult.html) | 🟡 Sourced | US obesity prevalence |
-| [SEC EDGAR](https://www.sec.gov) | 🟡 Sourced | NVO / LLY competitor revenue |
-| [IQVIA Institute 2024](https://www.iqvia.com/insights/the-iqvia-institute) | 🟡 Sourced | Market size estimates |
+
+[ClinicalTrials.gov v2 API](https://clinicaltrials.gov/data-api/api) for  Active GLP-1 obesity trials 
+[CMS Part D 2023](https://data.cms.gov) for WAC vs net price by drug
+[CDC NHANES 2021-22](https://www.cdc.gov/obesity/data/adult.html)  for US obesity prevalence 
+[SEC EDGAR](https://www.sec.gov)  for NVO / LLY competitor revenue 
+[IQVIA Institute 2024](https://www.iqvia.com/insights/the-iqvia-institute) for Market size estimates 
 
 ---
 
