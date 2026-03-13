@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>GLP-1 Watch — Global Obesity Drug Market Tracker</title>
+  <meta name="description" content="Personal research dashboard tracking the GLP-1 / incretin obesity drug market. Python backend with live ClinicalTrials.gov data, CMS pricing, SEC filings, and NumPy Monte Carlo." />
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
+  <link rel="stylesheet" href="styles/main.css" />
+</head>
+<body>
+
+  <!-- Loading overlay -->
+  <div id="loadOverlay">
+    <div class="load-wordmark">GLP-<em>1</em> Watch</div>
+    <div class="load-sub">Connecting to Python backend</div>
+    <div class="load-bar-outer">
+      <div class="load-bar-inner" id="loadBar"></div>
+    </div>
+    <div class="load-status" id="loadStatus">Starting…</div>
+  </div>
+
+  <!-- Header -->
+  <header>
+    <div class="wordmark">
+      <div class="wordmark-icon">G1</div>
+      <div class="wordmark-name">GLP-<em>1</em> Watch</div>
+      <span class="wordmark-badge">BETA</span>
+    </div>
+
+    <nav>
+      <button class="nav-btn active" data-tab="market"       onclick="switchTab('market')">Market Overview</button>
+      <button class="nav-btn"        data-tab="pipeline"     onclick="switchTab('pipeline')">Pipeline <span class="nav-live-dot"></span></button>
+      <button class="nav-btn"        data-tab="forecast"     onclick="switchTab('forecast')">Forecast Model</button>
+      <button class="nav-btn"        data-tab="montecarlo"   onclick="switchTab('montecarlo')">Monte Carlo</button>
+      <button class="nav-btn"        data-tab="intelligence" onclick="switchTab('intelligence')">🔒 Commercial Intel</button>
+    </nav>
+
+    <div class="header-right">
+      <div class="data-status" id="dataStatusBar">
+        <span class="status-indicator"><span class="s-dot live"></span>Python API</span>
+        <span class="status-indicator"><span class="s-dot live"></span>ClinicalTrials.gov</span>
+        <span class="status-indicator"><span class="s-dot static"></span>CMS / CDC / SEC</span>
+      </div>
+    </div>
+  </header>
+
+  <!-- Layout -->
+  <div class="app-layout">
+
+    <aside>
+      <div class="sb-group">
+        <div class="sb-label">Forecast Controls</div>
+        <div class="ctrl">
+          <label for="ctlHorizon">Forecast Horizon</label>
+          <select id="ctlHorizon" onchange="onParamChange()">
+            <option value="5">2025 – 2029 (5yr)</option>
+            <option value="10" selected>2025 – 2034 (10yr)</option>
+          </select>
+        </div>
+        <div class="ctrl">
+          <label for="ctlScenario">Scenario</label>
+          <select id="ctlScenario" onchange="onParamChange()">
+            <option value="base">Base Case</option>
+            <option value="bull">Bull Case (+35%)</option>
+            <option value="bear">Bear Case (−32%)</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="sb-group">
+        <div class="sb-label">Market Assumptions</div>
+        <div class="range-ctrl">
+          <div class="range-hd">
+            <span class="range-lbl">Peak Penetration</span>
+            <span class="range-val" id="penDisplay">18%</span>
+          </div>
+          <input type="range" id="ctlPen" min="8" max="35" value="18"
+            oninput="document.getElementById('penDisplay').textContent=this.value+'%'; onParamChange()">
+        </div>
+        <div class="range-ctrl" style="margin-top:12px">
+          <div class="range-hd">
+            <span class="range-lbl">Avg Net Price / yr</span>
+            <span class="range-val" id="priceDisplay">$11K</span>
+          </div>
+          <input type="range" id="ctlPrice" min="6" max="18" value="11"
+            oninput="document.getElementById('priceDisplay').textContent='$'+this.value+'K'; onParamChange()">
+        </div>
+        <div class="range-ctrl" style="margin-top:12px">
+          <div class="range-hd">
+            <span class="range-lbl">Gross-to-Net Discount</span>
+            <span class="range-val" id="gtnDisplay">38%</span>
+          </div>
+          <input type="range" id="ctlGTN" min="20" max="60" value="38"
+            oninput="document.getElementById('gtnDisplay').textContent=this.value+'%'; onParamChange()">
+        </div>
+      </div>
+
+      <div class="sb-group">
+        <div class="sb-label">Actions</div>
+        <button class="btn btn-primary" onclick="runMC()">⟳ Re-run Monte Carlo</button>
+        <div style="height:6px"></div>
+        <button class="btn btn-secondary" onclick="exportCSV()">↓ Export Forecast CSV</button>
+      </div>
+
+      <div class="sb-group">
+        <div class="sb-label">Backend Stack</div>
+        <div class="src-pill"><span class="src-dot" style="background:#22c55e"></span>FastAPI + Uvicorn</div>
+        <div class="src-pill"><span class="src-dot" style="background:#22c55e"></span>NumPy Monte Carlo</div>
+        <div class="src-pill"><span class="src-dot" style="background:#22c55e"></span>HTTPX async fetch</div>
+        <div class="src-pill"><span class="src-dot" style="background:#d97706"></span>CMS / CDC / SEC static</div>
+        <div class="src-note">
+          Backend: <code>uvicorn main:app --reload</code><br>
+          Frontend: any static server on port 8080<br>
+          Docs: <a href="http://localhost:8000/docs" target="_blank" style="color:var(--blue)">localhost:8000/docs</a>
+        </div>
+      </div>
+    </aside>
+
+    <main id="mainContent">
+      <div style="display:flex;align-items:center;justify-content:center;height:200px;
+                  color:var(--text3);font-family:'JetBrains Mono',monospace;font-size:0.8rem">
+        Loading…
+      </div>
+    </main>
+
+  </div>
+
+  <script type="module" src="js/app.js"></script>
+</body>
+</html>
