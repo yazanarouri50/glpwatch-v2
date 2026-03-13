@@ -10,7 +10,7 @@
 
 export const BASE_URL = window.location.hostname === "localhost" || window.location.hostname === "127.0.0.1"
   ? "http://localhost:8000"
-  : "https://glp1watch.onrender.com";
+  : "https://glpwatch-v2.onrender.com";
 
 /**
  * Generic fetch wrapper.
