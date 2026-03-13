@@ -8,7 +8,9 @@
  * Change BASE_URL to your deployed backend URL for production.
  */
 
-export const BASE_URL = "http://localhost:8000";
+export const BASE_URL = window.location.hostname === "localhost" || window.location.hostname === "127.0.0.1"
+  ? "http://localhost:8000"
+  : "https://glp1watch.onrender.com";
 
 /**
  * Generic fetch wrapper.
