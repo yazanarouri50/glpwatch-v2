@@ -1,4 +1,4 @@
-# GLP-1 Watch v2 📈
+# GLP-1 Watch v2 
 
 > Personal research dashboard tracking the global GLP-1 / obesity drug market boom.  
 > **Python backend (FastAPI + NumPy) · Vanilla JS frontend · Live ClinicalTrials.gov API**
