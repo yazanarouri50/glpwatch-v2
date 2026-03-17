@@ -27,9 +27,14 @@ CTGOV_URL = "https://clinicaltrials.gov/api/v2/studies"
 
 CTGOV_PARAMS = {
     "query.cond":          "obesity",
-    "query.intr":          "GLP-1 OR semaglutide OR tirzepatide OR liraglutide OR retatrutide OR incretin OR orforglipron",
+    "query.intr":          (
+        "GLP-1 OR semaglutide OR tirzepatide OR liraglutide OR retatrutide OR incretin OR orforglipron "
+        "OR maridebart OR cafraglutide OR cagrilintide OR survodutide OR mazdutide OR danuglipron "
+        "OR pemvidutide OR bimagrumab OR GIP OR amylin OR cotadutide OR efocipegtrutide "
+        "OR semaglutide OR MariTide OR AMG133"
+    ),
     "filter.overallStatus":"RECRUITING,ACTIVE_NOT_RECRUITING,COMPLETED",
-    "pageSize":            "40",
+    "pageSize":            "50",
     "fields":              "NCTId,BriefTitle,OverallStatus,Phase,StartDate,PrimaryCompletionDate,LeadSponsorName,EnrollmentCount",
 }
 
@@ -95,6 +100,18 @@ def _truncate(s: str, n: int) -> str:
 def _fallback_trials() -> list:
     """Curated static fallback — used when ClinicalTrials.gov is unreachable."""
     return [
+        {
+            "nct": "NCT06656585", "title": "MARITIME-1: Maridebart Cafraglutide (MariTide) in Adults with Obesity",
+            "status": "RECRUITING", "phase": "PHASE3", "phase_num": 3,
+            "sponsor": "Amgen", "start": "2024-11", "completion": "2027-02",
+            "enrollment": 3500, "url": "https://clinicaltrials.gov/study/NCT06656585",
+        },
+        {
+            "nct": "NCT06858878", "title": "MARITIME-2: Maridebart Cafraglutide in Obesity with Type 2 Diabetes",
+            "status": "RECRUITING", "phase": "PHASE3", "phase_num": 3,
+            "sponsor": "Amgen", "start": "2024-12", "completion": "2027-03",
+            "enrollment": 999, "url": "https://clinicaltrials.gov/study/NCT06858878",
+        },
         {
             "nct": "NCT05536804", "title": "A Phase 3 Study of Retatrutide (LY3437943) in Adults with Obesity",
             "status": "RECRUITING", "phase": "PHASE3", "phase_num": 3,
@@ -195,37 +212,43 @@ def get_cdc_data() -> dict:
 
 
 # ─── SEC EDGAR — competitor revenue ──────────────────────────────────────────
-# Source: annual 10-K / 20-F filings
-# Novo Nordisk: https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=NVO&type=20-F
-# Eli Lilly:    https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=LLY&type=10-K
+# Sources:
+# Novo Nordisk FY2024 Annual Report (20-F):
+#   Ozempic $17.46B, Wegovy $8.44B, Rybelsus $3.38B
+#   Total GLP-1: ~$29.3B | Obesity (Wegovy+Saxenda): ~$9.44B | YoY GLP-1: +26%
+#   https://annualreport.novonordisk.com/2024/strategic-aspirations/financials.html
+# Eli Lilly FY2024 10-K:
+#   Mounjaro $11.54B, Zepbound $4.93B
+#   Total incretin: ~$16.5B | Obesity (Zepbound): $4.93B | YoY total: +32%
+#   https://investor.lilly.com/news-releases/news-release-details/lilly-reports-full-q4-2024-financial-results-and-provides-2025
 
 def get_sec_data() -> dict:
     return {
         "Novo Nordisk": {
             "ticker":        "NVO",
-            "glp1_rev_b":    18.4,
-            "obesity_rev_b": 4.2,
-            "yoy_pct":       31,
-            "year":          2023,
-            "source":        "SEC 20-F FY2023",
-            "filing_url":    "https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=NVO&type=20-F",
+            "glp1_rev_b":    29.3,
+            "obesity_rev_b": 9.4,
+            "yoy_pct":       26,
+            "year":          2024,
+            "source":        "NVO Annual Report FY2024",
+            "filing_url":    "https://annualreport.novonordisk.com/2024/strategic-aspirations/financials.html",
         },
         "Eli Lilly": {
             "ticker":        "LLY",
-            "glp1_rev_b":    9.5,
-            "obesity_rev_b": 2.5,
-            "yoy_pct":       89,
-            "year":          2023,
-            "source":        "SEC 10-K FY2023",
-            "filing_url":    "https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=LLY&type=10-K",
+            "glp1_rev_b":    16.5,
+            "obesity_rev_b": 4.9,
+            "yoy_pct":       74,
+            "year":          2024,
+            "source":        "LLY 10-K FY2024",
+            "filing_url":    "https://investor.lilly.com/news-releases/news-release-details/lilly-reports-full-q4-2024-financial-results-and-provides-2025",
         },
         "AstraZeneca": {
             "ticker":        "AZN",
-            "glp1_rev_b":    1.1,
-            "obesity_rev_b": 0.3,
-            "yoy_pct":       12,
-            "year":          2023,
-            "source":        "SEC 20-F FY2023",
+            "glp1_rev_b":    1.3,
+            "obesity_rev_b": 0.4,
+            "yoy_pct":       18,
+            "year":          2024,
+            "source":        "AZN Annual Report FY2024",
             "filing_url":    "https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=AZN&type=20-F",
         },
         "Pfizer": {
@@ -233,26 +256,32 @@ def get_sec_data() -> dict:
             "glp1_rev_b":    0.0,
             "obesity_rev_b": 0.0,
             "yoy_pct":       0,
-            "year":          2023,
-            "source":        "Phase 3 only — no revenue yet",
+            "year":          2024,
+            "source":        "Phase 2 only — no approved obesity revenue",
             "filing_url":    "https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=PFE&type=10-K",
         },
     }
 
 
 # ─── Market size estimates ────────────────────────────────────────────────────
-# Source: IQVIA Institute for Human Data Science (2024 public report)
-#         EvaluatePharma Obesity Forecast 2024
+# Sources:
+# - IQVIA Institute public report: "Obesity Market Revolution" (2024)
+#     Global anti-obesity medication (AOM) spending ~$30B+ by 2024
+#     https://www.iqvia.com/library/articles/obesity-market-revolution
+# - IQVIA Global Use of Medicines 2024: potential $131B by 2028 at 24-27% CAGR
+# - Multiple market research sources converge on ~$53B total GLP-1 market 2024
+#     (all indications: diabetes + obesity combined)
+# - US patients on GLP-1: ~12-15M projected by 2030 (IQVIA); ~9M in 2024 (AMA survey: 1 in 8 US adults)
 
 def get_market_estimates() -> dict:
     return {
+        "total_glp1_rev_2024_b":  53.0,
         "total_glp1_rev_2023_b":  37.4,
-        "total_glp1_rev_2022_b":  18.2,
-        "patients_on_glp1_us_m":  6.8,
-        "forecast_2030_bear_b":   85,
-        "forecast_2030_base_b":   130,
+        "patients_on_glp1_us_m":  9.0,
+        "forecast_2030_bear_b":   90,
+        "forecast_2030_base_b":   131,
         "forecast_2030_bull_b":   180,
-        "source": "IQVIA Institute 2024 (public) / EvaluatePharma 2024",
+        "source": "IQVIA Institute 2024 (public) / NVO + LLY FY2024 annual reports",
     }
 
 

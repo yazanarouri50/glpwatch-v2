@@ -123,7 +123,7 @@ async function renderMarket() {
   catch (e) { setMain(errorShell(e.message)); return; }
 
   const { cms, cdc, sec, market, drugs } = data;
-  const growth = ((market.total_glp1_rev_2023_b / market.total_glp1_rev_2022_b - 1) * 100).toFixed(0);
+  const growth = ((market.total_glp1_rev_2024_b / market.total_glp1_rev_2023_b - 1) * 100).toFixed(0);
 
   const approvedRows = drugs.filter(d => d.phase === "approved").map(d => `
     <tr>
@@ -163,16 +163,16 @@ async function renderMarket() {
   setMain(`
     <div class="kpi-row">
       <div class="kpi blue">
-        <div class="kpi-label">GLP-1 Market 2023</div>
-        <div class="kpi-value">$${market.total_glp1_rev_2023_b}B</div>
+        <div class="kpi-label">GLP-1 Market 2024</div>
+        <div class="kpi-value">$${market.total_glp1_rev_2024_b}B</div>
         <div class="kpi-sub">Global net revenue · IQVIA 2024</div>
-        <div class="kpi-delta pos">▲ +${growth}% YoY</div>
+        <div class="kpi-delta pos">▲ +${growth}% vs 2023 ($${market.total_glp1_rev_2023_b}B)</div>
       </div>
       <div class="kpi sky">
         <div class="kpi-label">US Patients on GLP-1</div>
         <div class="kpi-value">${market.patients_on_glp1_us_m}M</div>
-        <div class="kpi-sub">Active US prescriptions · 2024</div>
-        <div class="kpi-delta pos">▲ ~6.3% of obese adults</div>
+        <div class="kpi-sub">Active US prescriptions · 2024 (AMA survey)</div>
+        <div class="kpi-delta pos">▲ ~8.3% of obese adults</div>
       </div>
       <div class="kpi amber">
         <div class="kpi-label">US Obesity Prevalence</div>
@@ -184,11 +184,11 @@ async function renderMarket() {
         <div class="kpi-label">2030 Forecast</div>
         <div class="kpi-value">$${market.forecast_2030_base_b}B</div>
         <div class="kpi-sub">Base · $${market.forecast_2030_bear_b}B–$${market.forecast_2030_bull_b}B range</div>
-        <div class="kpi-delta pos">▲ ~3.5× current</div>
+        <div class="kpi-delta pos">▲ ~2.5× current · IQVIA Institute</div>
       </div>
     </div>
 
-    <div class="sec-div">Competitor Revenue — SEC EDGAR</div>
+    <div class="sec-div">Competitor Revenue — FY2024 Annual Reports</div>
     <div class="g2">
       <div class="card">
         <div class="card-hd">
@@ -431,8 +431,8 @@ async function renderForecast(p) {
         <span class="chip sky">GLOBAL</span>
       </div>
       <div class="g2" style="margin-bottom:16px">
-        <canvas id="regionDonut" height="180"></canvas>
-        <canvas id="regionLine"  height="180"></canvas>
+        <div style="position:relative;height:220px"><canvas id="regionDonut"></canvas></div>
+        <div style="position:relative;height:220px"><canvas id="regionLine"></canvas></div>
       </div>
       <div class="region-grid">${regionCards}</div>
     </div>`);

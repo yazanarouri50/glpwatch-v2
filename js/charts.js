@@ -139,7 +139,7 @@ export function drawRegionDonut(id, regions) {
       labels: regions.map(r => r.name),
       datasets: [{ data: regions.map(r => r.peak_rev), backgroundColor: regions.map(r => r.color+"cc"), borderWidth: 2, borderColor: "#fff" }],
     },
-    options: { plugins: { legend: { position: "bottom", labels: { color: "#64748b", font: { size: 10 }, padding: 6 } } }, responsive: true, maintainAspectRatio: true },
+    options: { plugins: { legend: { position: "bottom", labels: { color: "#64748b", font: { size: 10 }, padding: 6 } } }, responsive: true, maintainAspectRatio: false, aspectRatio: 1.4 },
   }));
 }
 
@@ -156,7 +156,7 @@ export function drawRegionLineChart(id, years, regions) {
         fill: false, tension: 0.4, borderWidth: 2, pointRadius: 2,
       })),
     },
-    options: baseOpts("$B"),
+    options: { ...baseOpts("$B"), maintainAspectRatio: false, aspectRatio: 1.4 },
   }));
 }
 
